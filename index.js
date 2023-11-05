@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion,ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -33,17 +33,22 @@ async function run() {
         // const webCollection = client.db('jobseeker').collection('webs')
         // const digitalCollection = client.db('jobseeker').collection('digital')
         // const graphicCollection = client.db('jobseeker').collection('graphic')
+        const alltypeCollection = client.db('jobseeker').collection('jobtype')
 
-        ///get all data of web,digital marketing,graphic design development
+        ///get all type of job
+        app.get('/alltype', async (req, res) => {
+            const cursor = alltypeCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
-      
 
+        ///get all data of web,digital marketing,graphic design development    
         app.get('/alljobs', async (req, res) => {
             const cursor = AllCollection.find();
             const result = await cursor.toArray();
             res.send(result)
         })
-
 
         ////get specific job detail from database using  id
         app.get('/alljobs/:id', async (req, res) => {
