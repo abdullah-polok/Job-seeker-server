@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion,ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -30,11 +30,9 @@ async function run() {
         // Send a ping to confirm a successful connection
 
         const AllCollection = client.db('jobseeker').collection('alljobs')
-        // const webCollection = client.db('jobseeker').collection('webs')
-        // const digitalCollection = client.db('jobseeker').collection('digital')
-        // const graphicCollection = client.db('jobseeker').collection('graphic')
         const alltypeCollection = client.db('jobseeker').collection('jobtype')
-
+        const bidsCollection = client.db('jobseeker').collection('bids')
+        const addJobCollection = client.db('jobseeker').collection('addjobs')
         ///get all type of job
         app.get('/alltype', async (req, res) => {
             const cursor = alltypeCollection.find();
@@ -60,6 +58,34 @@ async function run() {
 
 
 
+        ////post bids data into the database
+        app.post('/bids', async (req, res) => {
+            const bid = req.body;
+            const result = await bidsCollection.insertOne(bid)
+            res.send(result)
+        })
+
+        ////get bids data into the database
+        app.get('/bids', async (req, res) => {
+            const cursor = bidsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+
+        ////post add job data into the database
+        app.post('/addjobs', async (req, res) => {
+            const bid = req.body;
+            const result = await addJobCollection.insertOne(bid)
+            res.send(result)
+        })
+
+        ////get add job data into the database
+        app.get('/addjobs', async (req, res) => {
+            const cursor = addJobCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
