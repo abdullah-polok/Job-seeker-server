@@ -87,13 +87,22 @@ async function run() {
             res.send(result)
         })
 
+        ////get specific job detail from database using  id
+        app.get('/addjobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await addJobCollection.findOne(query);
+            res.send(result)
+        })
+
+
         ///update a specific data and store into database
-        app.put('/addjob/:id', async (req, res) => {
+        app.put('/addjobs/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
             const jobInfo = req.body;
-            const updateedJob = {
+            const updatedJob = {
                 $set: {
                     job_title: jobInfo.job_title,
                     email: jobInfo.email,
@@ -104,8 +113,18 @@ async function run() {
                     type: jobInfo.type,
                 }
             }
-            const result = await addJobCollection.updateOne(filter, updateedJob, options)
+            const result = await addJobCollection.updateOne(filter, updatedJob, options)
             res.send(result);
+        })
+
+
+        ///Delete a specific data and store into database
+        app.delete('/addjobs/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: new ObjectId(id) }
+            const result = await addJobCollection.deleteOne(query);
+            res.send(result)
         })
 
 
