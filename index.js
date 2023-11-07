@@ -70,9 +70,9 @@ async function run() {
 
         // ////get bids data into the database using email query
         app.get('/bids', async (req, res) => {
-            console.log(req.query.userEmail)
-            const queryEmail = req.query.userEmail
-            let query = { email: queryEmail };
+            console.log("Bids req email:", req.query.email)
+            const queryEmail = req.query.email
+            let query = { userEmail: queryEmail };
             const cursor = bidsCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
