@@ -144,26 +144,36 @@ async function run() {
             res.send(result)
         })
 
-        ////get bids data into the database
-        app.get('/bids', logger, verifyToken, async (req, res) => {
+        // ////get bids data into the database
+        app.get('/bids', async (req, res) => {
+            console.log(req.query.userEmail)
+            console.log(req.body)
             ///check cookies data
+            ///logger, verifyToken,
+
             // console.log("Cookies :", req.cookies)
 
             ///check exact user email then provide tha data 
-            ///if email not match with the user email then it will not show data
-            if (req.user.email !== req.query.email) {
-                return res.status(403).send({ message: 'forbidden access' })
-            }
-            let query = {};
-            if (req.query?.email) {
-                query = { email: req.query.email }
-            }
+            // /if email not match with the user email then it will not show data
+            // if (req.user.email !== req.query.email) {
+            //     return res.status(403).send({ message: 'forbidden access' })
+            // }
+            let query = req.query.userEmail;
+            // if (req.query?.email) {
+            //     query = { email: req.query.email }
+            // }
 
             const cursor = bidsCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
 
+        ////get specific job detail from database using  id
+        app.get('/bids', async (req, res) => {
+            const cursor = bidsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
         ////post add job data into the database
         app.post('/addjobs', async (req, res) => {
@@ -172,9 +182,12 @@ async function run() {
             res.send(result)
         })
 
-        ////get add job data into the database
+        ////get add job data into the database using email query
         app.get('/addjobs', async (req, res) => {
-            const cursor = addJobCollection.find();
+            console.log("Req.query.email", req.query.email)
+            const queryEmail = req.query.email
+            const query = { email: queryEmail }
+            const cursor = addJobCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
