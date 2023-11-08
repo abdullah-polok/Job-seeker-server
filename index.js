@@ -85,6 +85,24 @@ async function run() {
             res.send(result)
         })
 
+        ///patch a specific data using id and store
+        app.put('/bids', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedjob = req.body;
+            const updateDoc = {
+                $set: {
+                    status: updatedjob.status,
+                    job_title: updatedjob.job_title,
+                    userEmail: updatedjob.email,
+                    deadline: updatedjob.deadline,
+                }
+            }
+            const result = await bidsCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+
+
         ////post add job data into the database
         app.post('/addjobs', async (req, res) => {
             const bid = req.body;
@@ -116,16 +134,16 @@ async function run() {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
-            const jobInfo = req.body;
+            const updatedjob = req.body;
             const updatedJob = {
                 $set: {
-                    job_title: jobInfo.job_title,
-                    email: jobInfo.email,
-                    minamount: jobInfo.minamount,
-                    maxamount: jobInfo.maxamount,
-                    deadline: jobInfo.deadline,
-                    short_description: jobInfo.short_description,
-                    type: jobInfo.type,
+                    job_title: updatedjob.job_title,
+                    email: updatedjob.email,
+                    minamount: updatedjob.minamount,
+                    maxamount: updatedjob.maxamount,
+                    deadline: updatedjob.deadline,
+                    short_description: updatedjob.short_description,
+                    type: updatedjob.type,
                 }
             }
             const result = await addJobCollection.updateOne(filter, updatedJob, options)
