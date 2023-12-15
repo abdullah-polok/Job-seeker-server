@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express = require('express')
 const cors = require('cors');
-require('dotenv').config();
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
@@ -60,6 +60,14 @@ async function run() {
         })
 
 
+        ////post add job data into the database
+        app.post('/alljobs', async (req, res) => {
+            const bid = req.body;
+            const result = await AllCollection.insertOne(bid)
+            res.send(result)
+        })
+
+
 
         ////post bids data into the database
         app.post('/bids', async (req, res) => {
@@ -67,6 +75,7 @@ async function run() {
             const result = await bidsCollection.insertOne(bid)
             res.send(result)
         })
+
 
         // ////get bids data into the database using email query
         app.get('/bids', async (req, res) => {
@@ -79,14 +88,14 @@ async function run() {
         })
 
         ////get specific job detail from database using  id
-        app.get('/bids', async (req, res) => {
+        app.get('/allbids', async (req, res) => {
             const cursor = bidsCollection.find();
             const result = await cursor.toArray();
             res.send(result)
         })
 
         ///patch a specific data using id and store
-        app.put('/bids', async (req, res) => {
+        app.put('/bids/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const updatedjob = req.body;
@@ -103,12 +112,7 @@ async function run() {
         })
 
 
-        ////post add job data into the database
-        app.post('/addjobs', async (req, res) => {
-            const bid = req.body;
-            const result = await addJobCollection.insertOne(bid)
-            res.send(result)
-        })
+
 
         ////get add job data into the database using email query
         app.get('/addjobs', async (req, res) => {
@@ -161,9 +165,9 @@ async function run() {
         })
 
 
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } finally {
+    } catch {
         // Ensures that the client will close when you finish/error
         // await client.close();
     }
